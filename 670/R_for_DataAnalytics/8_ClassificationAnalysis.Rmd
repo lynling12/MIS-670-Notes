@@ -1,0 +1,191 @@
+---
+title: "Classification"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+library(party)  # You may need to install these packages first, if not installed yet
+library(randomForest)
+library(caret)
+library(e1071)
+library(tree)
+library(rpart.plot)
+library(corrplot)
+```
+
+
+```{r}
+df <- read.csv("heartattack_train.csv")
+
+# view data 
+head(df)
+```
+
+
+
+```{r}
+#descriptive statistics
+mean(df$Age)
+summary(df)
+str(df)
+```
+
+### Correlation
+
+```{r}
+df2 <- df
+str(df2)
+```
+
+```{r}
+df2$Heart_Attack <- as.numeric(as.factor(df2$Heart_Attack))
+str(df2)
+```
+
+```{r}
+corrplot(cor(df2), method="number")
+```
+
+### Split validation
+```{r}
+set.seed(123)
+intrain <- createDataPartition(y = df$Heart_Attack, p= 0.7, list=FALSE)
+train <- df[intrain,]
+test <- df[-intrain,]
+```
+
+```{r}
+head(train)
+head(test)
+```
+
+```{r}
+dim(train)
+dim(test)
+```
+
+### Model building w/ split validation
+
+#### Decision tree
+```{r}
+dt = rpart(Heart_Attack ~ ., data = train, method="class")
+dt
+```
+
+```{r}
+summary(dt)
+```
+
+```{r}
+rpart.plot(dt)
+```
+
+### Testing & Evaluation
+
+```{r}
+# estimate on the test dataset
+predictions <- predict(dt, test, type="class")
+confusionMatrix(predictions, test$Heart_Attack)
+```
+
+### RandomForest
+```{r}
+rf <- randomForest(Heart_Attack ~ ., data = train)
+rf
+```
+
+### Testing & Evaluation
+
+```{r}
+# estimate on the test dataset
+predictions <- predict(rf, newdata = test)
+confusionMatrix(predictions, test$Heart_Attack)
+```
+
+### 10 fold Cross validation
+
+```{r}
+# Run algorithms using 10-fold cross validation
+control <- trainControl(method="cv", number=10)
+metric <- "Accuracy"
+```
+
+https://machinelearningmastery.com/machine-learning-in-r-step-by-step/
+
+#### using full dataset
+```{r}
+# Tree
+set.seed(7)
+fit.tree <- train(Heart_Attack~., data=df, method="rpart", metric=metric, trControl=control)
+# kNN
+set.seed(7)
+fit.knn <- train(Heart_Attack~., data=df, method="knn", metric=metric, trControl=control)
+# c) advanced algorithms
+# SVM
+set.seed(7)
+fit.svm <- train(Heart_Attack~., data=df, method="svmRadial", metric=metric, trControl=control)
+# Random Forest
+set.seed(7)
+fit.rf <- train(Heart_Attack~., data=df, method="rf", metric=metric, trControl=control)
+```
+
+#### using training dataset only
+```{r}
+# Tree
+set.seed(7)
+fit.tree <- train(Heart_Attack~., data=train, method="rpart", metric=metric, trControl=control)
+# kNN
+set.seed(7)
+fit.knn <- train(Heart_Attack~., data=train, method="knn", metric=metric, trControl=control)
+# c) advanced algorithms
+# SVM
+set.seed(7)
+fit.svm <- train(Heart_Attack~., data=train, method="svmRadial", metric=metric, trControl=control)
+# Random Forest
+set.seed(7)
+fit.rf <- train(Heart_Attack~., data=train, method="rf", metric=metric, trControl=control)
+```
+
+```{r}
+# summarize accuracy of models
+results <- resamples(list(tree=fit.tree, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+summary(results)
+```
+
+```{r}
+# compare accuracy of models
+dotplot(results)
+```
+```{r}
+varImp(fit.rf)
+```
+
+
+### scoring dataset: predicting y label
+```{r}
+scoringdataset <- read.csv("heartattack_scoring.csv")
+# view data 
+head(scoringdataset)
+```
+
+```{r}
+predictions <- predict(fit.rf, scoringdataset)
+print (predictions)
+```
+
+### Logistic Regression (Logit Function)
+```{r}
+lr = glm(Heart_Attack ~ Age + Marital_Status + Gender + Weight_Category + Cholesterol + 
+              Stress_Management + Trait_Anxiety, data=df, family=binomial(link='logit'))
+summary(lr)
+```
+
+```{r}
+lr = glm(Heart_Attack ~ ., data=df, family=binomial(link='logit'))
+summary(lr)
+```
+
+
+

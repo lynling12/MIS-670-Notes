@@ -1,0 +1,51 @@
+---
+title: "Regression"
+---
+
+```{r}
+#Load Datasets (baseball.csv)
+df <- read.csv("b_housing.csv")
+
+# view data 
+head(df)
+```
+
+```{r}
+dim(df)
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+scatter.smooth(x=df$rm, y=df$medv)  # scatterplot
+```
+
+```{r}
+cor(df)
+```
+
+```{r}
+# Correlations with significance levels
+library(Hmisc)
+rcorr(as.matrix(df), type="pearson") # type can be pearson or spearman
+```
+
+```{r}
+LM <- lm(medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + black + lstat, data = df)
+summary (LM)
+```
+
+```{r}
+test_dataset <- read.csv("b_housing_scoringdataset.csv")
+
+# view data 
+head(test_dataset)
+```
+
+```{r}
+pred <- predict(LM, test_dataset)
+print (pred)
+```
+

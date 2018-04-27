@@ -1,0 +1,61 @@
+---
+title: "Data Visualization using ggplot"
+---
+Source: http://r-statistics.co/Complete-Ggplot2-Tutorial-Part1-With-R-Code.html
+
+```{r}
+#install.packages("ggplot2")
+```
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+data(diamonds)   #ggplot2 must be loaded first.
+head(diamonds)
+```
+
+```{r}
+ggplot(diamonds, aes(x=carat, y=price)) + geom_point()
+```
+
+```{r}
+ggplot(diamonds, aes(x=carat, y=price)) + geom_point() + geom_smooth()
+```
+
+```{r}
+ggplot(diamonds, aes(x=carat, y=price, color=cut)) + geom_point() + geom_smooth() # Adding scatterplot geom (layer1) and smoothing geom (layer2).
+```
+```{r}
+ggplot(diamonds) + geom_point(aes(x=carat, y=price, color=cut)) + geom_smooth(aes(x=carat, y=price)) # Remove color from geom_smooth
+```
+
+
+```{r}
+#boxplots
+boxplot(diamonds$carat)
+```
+
+```{r}
+#scatterplot
+plot(price ~ carat, data = diamonds)
+```
+
+```{r}
+plot(diamonds$carat, diamonds$price)
+```
+
+```{r}
+#histogram
+hist(diamonds$carat)
+```
+
+```{r}
+hist(diamonds$carat, main= "Carat Histogram", xlab="Carat", ylab="Count")
+```
+
+```{r}
+#bar chart
+plot(diamonds$cut)
+```

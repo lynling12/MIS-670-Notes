@@ -1,0 +1,60 @@
+---
+title: "Hypothesis Testing"
+---
+
+```{r}
+df <- read.csv("tips.csv")
+head(df)
+```
+
+### t-test
+```{r}
+# independent 2-group t-test
+#t.test(y~x) # where y is numeric and x is a binary factor
+t.test(df$tip~df$sex)
+```
+```{r}
+t.test(df$total_bill~df$sex)
+```
+
+```{r}
+t.test(df$tip~df$smoker)
+```
+
+### ANOVA
+```{r}
+# Show the levels
+levels(df$day)
+```
+
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x = day, y = tip)) +
+  geom_boxplot(fill = "grey80", colour = "blue") +
+  scale_x_discrete() + xlab("days") +
+  ylab("tips")
+```
+
+```{r}
+# Compute the analysis of variance
+anova <- aov(tip ~ day, data = df)
+# Summary of the analysis
+summary(anova)
+```
+As the p-value is above 0.05, we accept the null hypothesis "there is no difference in tip amounts with respect to days"
+
+```{r}
+df <- read.csv("father_son_height.csv")
+head(df)
+```
+
+
+### Paired t-test
+```{r}
+# paired t-test
+#t.test(y1,y2,paired=TRUE) # where y1 & y2 are numeric
+t.test(df$Father,df$Son,paired=TRUE) # where y1 & y2 are numeric
+
+```

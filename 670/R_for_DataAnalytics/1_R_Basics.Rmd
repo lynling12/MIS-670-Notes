@@ -1,0 +1,270 @@
+---
+title: "Introduction to R"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+I recommend the following R tutorials & short articles.
+
+- R Learning Path: From beginner to expert in R in 7 steps https://www.kdnuggets.com/2016/03/datacamp-r-learning-path-7-steps.html
+- RStudio Cheat Sheets https://www.rstudio.com/resources/cheatsheets/
+- R Notebook Cheat Sheet https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+- https://www.tutorialspoint.com/r/index.htm
+- http://www.statmethods.net/
+- http://www.r-tutor.com/
+- https://github.com/kabacoff/RiA2
+- R for Everyone (you can access this book from through K-State Library http://guides.lib.k-state.edu/az.php?q=safari)
+
+
+### Variables
+```{r}
+# declare variables
+
+myString <- "Hello, World!"
+myNumber <- 1000
+print (myString)
+print (myNumber)
+```
+
+### Data Types
+```{r}
+a <- c(1,2,5.3,6,-2,4) # numeric vector
+b <- c("one","two","three") # character vector
+c <- c(TRUE,TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
+
+a[c(2,4)] # 2nd and 4th elements of vector
+```
+
+### Operators (Arithmetic Operators)
+
++	addition
+-	subtraction
+*	multiplication
+/	division
+^ or **	exponentiation
+x %% y	modulus (x mod y) 5%%2 is 1
+x %/% y	integer division 5%/%2 is 2
+
+### Operators (Logical Operators)
+
+<	less than
+<=	less than or equal to
+>	greater than
+>=	greater than or equal to
+==	exactly equal to
+!=	not equal to
+!x	Not x
+x | y	x OR y
+x & y	x AND y
+isTRUE(x)	test if X is TRUE
+
+
+### Decision making (if statements)
+```{r}
+x <- 10
+
+if(x > 5) {
+   print("x is a big number")
+} else {
+   print("x is smaller than 5")
+}
+```
+
+```{r}
+x <- 5
+
+if(x > 5) {
+   print("x is greater than 5")
+} else if(x < 5) {
+  print("x is smaller than 5")
+} else {
+   print("x is equal to 5")
+}
+```
+
+```{r}
+x <- c("what","is","truth")
+
+if("Truth" %in% x) {
+   print("Truth is found the first time")
+} else if ("truth" %in% x) {
+   print("truth is found the second time")
+} else {
+   print("No truth found")
+}
+```
+
+
+### Loops
+
+```{r}
+x <- c("I", "Love", "You")
+for ( i in x) {
+   print(i)
+}
+```
+
+```{r}
+for (year in 2010:2015){
+  print(paste("The year is", year))
+}
+```
+
+```{r}
+for (i in 1:10) {
+  if (i %% 2){
+    next
+  }
+    print(i)
+}
+```
+
+```{r}
+for (i in 1:10) {
+  if (!i %% 2){
+    next
+  }
+    print(i)
+}
+```
+
+
+```{r}
+# Create the data frame.
+people <- 	data.frame(
+   gender = c("Male", "Male","Female"), 
+   height = c(152, 171.5, 165), 
+   weight = c(81,93, 78),
+   Age = c(42,38,26)
+)
+print(people)
+```
+
+```{r}
+# example of a list with 4 components - 
+# a string, a numeric vector, a matrix, and a scaler 
+w <- list(name="Fred", mynumbers=10, mymatrix=5, age=5.3)
+
+print (w)
+```
+
+### Getting and Setting the Working Directory
+```{r}
+# Get and print current working directory.
+print(getwd())
+
+# Set current working directory.
+setwd("C:/Users/bchae/Documents/R/665")
+# setwd("C:/Users/bchae/Documents/R/670")
+
+# Get and print current working directory.
+print(getwd())
+```
+
+### Exporting & Importing data
+```{r}
+data <- read.csv("tips.csv")
+print(data)
+```
+
+```{r}
+write.csv(data, "tips_copy.csv")
+```
+
+### View data
+```{r}
+head(data)
+```
+
+```{r}
+dim(data)
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+mean(data$tip)
+```
+
+```{r}
+max(data$tip)
+```
+```{r}
+summary(data)
+```
+
+### Data transformation: Selecting columns & Changing data types
+
+dplyr and tidyr are two popular R package for data manipulation 
+https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+data <- read.csv("titanic_train.csv")
+head(data)
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+df = select(data, Survived, Pclass, Sex, Age, Fare, Embarked)
+head(df)
+```
+
+
+```{r}
+str(df)
+```
+
+Embarked has empty cells
+```{r}
+df[df==""] <- NA
+str(df)
+```
+
+Check NA
+```{r}
+sapply(df, function(x) sum(is.na(x)))
+```
+
+```{r}
+df1 <- na.omit(df)
+sapply(df1, function(x) sum(is.na(x)))
+```
+
+```{r}
+dim(df1)
+```
+
+
+```{r}
+
+df1$Sex <- as.numeric(df1$Sex)
+#df$Embarked <- as.numeric(df$Embarked)
+str(df1)
+
+```
+
+
+```{r}
+#df$Sex <- as.numeric(as.factor(df$Sex))
+df1$Embarked <- as.numeric(df1$Embarked)
+str(df1)
+```
+
+```{r}
+head(df1)
+```
+
+save the data after cleaning & transforming
+```{r}
+write.csv(df1, "cleanedata.csv")
+```
+
