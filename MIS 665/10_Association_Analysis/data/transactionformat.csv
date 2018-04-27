@@ -1,0 +1,13 @@
+customer_id,purchased_item
+1,apple
+1,banana
+1,carrot
+2,banana
+3,apple
+4,apple
+4,carrot
+4,diet coke
+5,banana
+5,carrot
+6,banana
+6,carrot

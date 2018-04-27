@@ -1,0 +1,6 @@
+support,itemsets
+0.5,['apple']
+0.666666666667,['banana']
+0.666666666667,['carrot']
+0.333333333333,"['apple', 'carrot']"
+0.5,"['banana', 'carrot']"
